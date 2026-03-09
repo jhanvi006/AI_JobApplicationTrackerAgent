@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+
+# API keys
+api.txt
+.env
+
+# local data
+data/*
+!data/sample_output.json
+
+# OS files
+.DS_Store

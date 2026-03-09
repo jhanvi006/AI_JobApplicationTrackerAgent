@@ -1,0 +1,62 @@
+You are an Expert AI Architect and Senior Python Developer. Your goal is to generate a complete, runnable Python codebase for the "AI Job Application Assistant" using Streamlit.
+
+The application is a four-tab system that handles PDF parsing, AI-driven skill matching, dynamic PDF generation via ReportLab, state tracking, and most importantly, an intelligent feedback loop that updates a candidate's profile based on rejection data.
+
+HARD REQUIREMENTS
+Tech Stack: Python, Streamlit, ReportLab (for PDF generation), pdfplumber or PyPDF2 (for parsing), and the OpenAI API or Google Gemini API (for LLM logic).
+
+Data Storage: No external databases. You must implement a robust local data.json storage layer that handles read/write operations safely.
+
+Execution: The app must run flawlessly via streamlit run app.py.
+
+Completeness: Write the entire codebase. Provide all .py files, utility functions, and AI system prompts. DO NOT leave placeholders like # TODO: implement scoring logic or # TODO: handle file write. Write the actual logic.
+
+DATA SCHEMA (JSON STRUCTURE)
+The data.json file must track:
+
+original_profile: The raw text parsed from the first upload.
+
+current_profile_state: An evolving JSON object containing strengths, weaknesses, skills, and experience.
+
+applications: A list of dictionaries containing company_name, role, jd_text, match_score, status, rejection_notes, and ai_analysis_summary.
+
+global_insights: The latest generated summary of recurring rejection patterns.
+
+TAB 1: APPLY (ENGINEERING LOGIC)
+Inputs: File uploaders for candidate profile (.pdf/.txt/.docx) and reference resume (.pdf/.docx), plus a text area for the JD.
+
+LLM Task 1 (Extraction): Write a strict system prompt that parses the JD and the current_profile_state to output summarized plain text format for required skills, missing skills, and a match percentage (0-100%).
+
+Need a Reset button to clear down current all uploaded details and context of uploaded profile, Job description and start fresh if user wants after looking at matching score so a new process can be started fresh. 
+
+PDF Engine: Write a dedicated generate_resume(profile_data, jd_data, reference_style) function using ReportLab. It must intelligently re-order skills to prioritize JD requirements. If a skill was marked "weak" in current_profile_state due to a past rejection, it must be subtly de-emphasized in the generated PDF layout.
+
+State Update: A "Submitted" button that appends the application data to the JSON file and moves it to Tab 2.
+
+TAB 2: TRACKING (STATE MANAGEMENT)
+Render a Streamlit dataframe or stylized columns mapping the applications list.
+
+Implement status state machines: Submitted -> Interview -> Selected or Not Selected.
+
+Constraint: Clicking "Selected" without prior "Interview" status must trigger a Streamlit st.experimental_dialog (or equivalent modal) asking for confirmation.
+
+Constraint: Clicking "Not Selected" must move the row to Tab 3.
+
+TAB 3: NOT SELECTED (THE EVOLUTION ENGINE)
+Render a list of rejected applications. Each needs a st.text_area for user-inputted rejection notes (e.g., "I failed the system design round").
+
+LLM Task 2 (Rejection Analysis): When the "Analyze" button is clicked, write an AI call that passes the JD, the rejection notes, and the current_profile_state.
+
+The specific instruction must be: "Analyze the failure. Return an updated current_profile_state JSON that downgrades confidence in the failed skills and adds targeted improvement areas. Do not overwrite the original profile text, only the active cognitive state."
+
+TAB 4: GLOBAL ANALYSIS
+LLM Task 3 (Macro Patterns): A button that reads all rejection_notes and ai_analysis_summary across all failed applications. The AI must output concise 3-4 pointers to improve profile and markdown report detailing recurring skill gaps and strategic advice. also advise related courses after summary pointers and should not be more than 3 pointers to cover those skill gaps.
+
+UI / UX REQUIREMENTS
+Use Streamlit's native layout tools (st.tabs, st.columns, st.expander).
+
+Include a "Clear All Data" button in the sidebar. It must have a confirmation step. If confirmed, overwrite data.json with an empty schema and call st.rerun().
+
+Add visual flair: use success banners for generated resumes, warning colors for missing skills, and metrics components for match percentages.
+
+Now, generate the complete, production-ready Python files and prompts.
