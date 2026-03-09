@@ -53,5 +53,5 @@ Run the application with Streamlit:
 **Tech Stack**
 
 - Python
-- Streamlit | 
+- Streamlit
 - Claude Opus 4.6
